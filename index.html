@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spell Corrector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Spell Correction Tool</h1>
+    <textarea id="inputText" placeholder="Enter text to correct..."></textarea><br>
+    <button onclick="correctSpelling()">Correct Spelling</button>
+    <div class="output">
+        <h3>Results:</h3>
+        <p><strong>Original:</strong> <span id="originalText"></span></p>
+        <p><strong>Corrected:</strong> <span id="correctedText"></span></p>
+    </div>
+
+    <script>
+        async function correctSpelling() {
+            const text = document.getElementById("inputText").value;
+
+            const response = await fetch("http://127.0.0.1:5000/correct", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ text })
+            });
+
+            const data = await response.json();
+            console.log(data)
+            if (response.ok) {
+                document.getElementById("originalText").innerText = data.original;
+                document.getElementById("correctedText").innerText = data.corrected;
+            } else {
+                alert(data.error || "An error occurred");
+            }
+        }
+    </script>
+</body>
+</html>
